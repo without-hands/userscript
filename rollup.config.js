@@ -2,16 +2,10 @@ import { defineConfig } from 'rollup';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
-import babel from '@rollup/plugin-babel';
 import metablock from 'rollup-plugin-userscript-metablock';
 import pkg from './package.json';
 
-const defaultPlugins = [
-  nodeResolve(),
-  commonjs(),
-  typescript(),
-  babel({ babelHelpers: 'bundled' }),
-];
+const defaultPlugins = [nodeResolve(), commonjs(), typescript()];
 
 /**
  * @type {import('rollup-plugin-userscript-metablock').Options}
@@ -34,7 +28,7 @@ export default defineConfig([
     output: {
       name: 'vg-shortcuts',
       file: 'build/vg-shortcuts.user.js',
-      format: 'umd',
+      format: 'esm',
     },
     plugins: [
       ...defaultPlugins,
