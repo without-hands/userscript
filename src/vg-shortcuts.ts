@@ -1,5 +1,9 @@
 const postsSelector = '#posts > li.postcontainer';
+const previousPageSelector = '.pagination a[rel=prev]';
+const nextPageSelector = '.pagination a[rel=next]';
 const posts: Element[] = [];
+
+const goToBottom = 'go-to-bottom';
 
 function onKeydown(event: KeyboardEvent) {
   if (event.isComposing || event.repeat || event.key == null) {
@@ -21,14 +25,24 @@ function onKeydown(event: KeyboardEvent) {
 }
 
 function goToPreviousPost() {
-  const currentPost = getPostInFocus();
+  const currentPost = getCurrentPost();
   const currentIndex = posts.indexOf(currentPost);
   const nextPost = posts[currentIndex - 1];
   if (!nextPost) {
-    console.log('Start of page');
+    goToPreviousPage();
     return;
   }
   nextPost.scrollIntoView(true);
+}
+
+function goToPreviousPage() {
+  const previousPageUrl = document.querySelector<HTMLAnchorElement>(previousPageSelector)?.href;
+  if (!previousPageUrl) {
+    GM_log('End of thread');
+    return;
+  }
+  window.location.href = previousPageUrl;
+  GM_setValue(goToBottom, true);
 }
 
 function goToNextPost() {
@@ -36,22 +50,30 @@ function goToNextPost() {
   const scrollPercentage =
     window.scrollY / (documentElement.scrollHeight - documentElement.clientHeight);
   if (Math.abs(1 - scrollPercentage) < 0.001) {
-    console.log('End of page');
+    goToNextPage();
     return;
   }
 
-  const currentPost = getPostInFocus();
+  const currentPost = getCurrentPost();
   const currentIndex = posts.indexOf(currentPost);
   const nextPost = posts[currentIndex + 1];
-  // if (!nextPost || isInsideViewport(posts[posts.length - 1])) {
   if (!nextPost) {
-    console.log('End of page');
+    goToNextPage();
     return;
   }
   nextPost.scrollIntoView(true);
 }
 
-function getPostInFocus(): Element {
+function goToNextPage() {
+  const nextPageUrl = document.querySelector<HTMLAnchorElement>(nextPageSelector)?.href;
+  if (!nextPageUrl) {
+    GM_log('End of thread');
+    return;
+  }
+  window.location.href = nextPageUrl;
+}
+
+function getCurrentPost(): Element {
   const visiblePosts = posts.filter(intersectsViewport);
   visiblePosts.sort((a, b) => {
     const rectA = a.getBoundingClientRect();
@@ -73,11 +95,13 @@ function intersectsViewport(element: Element): boolean {
   return rect.bottom > 0 && rect.top < window.innerHeight;
 }
 
-function isInsideViewport(element: Element): boolean {
-  const rect = element.getBoundingClientRect();
-  return rect.top > 0 && rect.bottom < window.innerHeight;
-}
-
 document.addEventListener('keydown', onKeydown, true);
 posts.push(...document.querySelectorAll(postsSelector));
 posts.sort((a, b) => a.getBoundingClientRect().y - b.getBoundingClientRect().y);
+
+if (GM_getValue(goToBottom, false)) {
+  if (posts.length > 0) {
+    posts[posts.length - 1].scrollIntoView(true);
+  }
+  GM_deleteValue(goToBottom);
+}

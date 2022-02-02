@@ -41,6 +41,7 @@ export default defineConfig([
 
           'run-at': 'document-idle',
           include: 'https://vipergirls.to/threads/*',
+          grant: ['GM_setValue', 'GM_getValue', 'GM_deleteValue', 'GM_log'],
         },
       }),
     ],
