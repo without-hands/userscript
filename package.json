@@ -2,12 +2,6 @@
   "name": "@without-hands/userscript",
   "version": "0.1.0",
   "description": "Collection of userscripts",
-  "type": "module",
-  "scripts": {
-    "build": "rollup --config",
-    "test": "jest",
-    "prepare": "husky install"
-  },
   "homepage": "https://gitlab.hensler.dev/lennart/userscript",
   "repository": {
     "type": "git",
@@ -21,6 +15,25 @@
   ],
   "author": "without.hands",
   "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "serve": "nodemon --exec npm run build",
+    "build": "rollup -c",
+    "build:prod": "rollup -c --environment INCLUDE_DEPS,BUILD:production",
+    "test": "jest",
+    "prepare": "husky install"
+  },
+  "nodemonConfig": {
+    "ext": "ts,json,yaml,yml,env",
+    "watch": [
+      "src",
+      "meta.json",
+      "rollup.config.js"
+    ],
+    "env": {
+      "NODE_ENV": "development"
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.16.12",
     "@babel/preset-env": "^7.16.11",
@@ -39,6 +52,7 @@
     "husky": "^7.0.4",
     "install": "^0.13.0",
     "lint-staged": "^12.3.3",
+    "nodemon": "^2.0.15",
     "npm": "^8.4.0",
     "prettier": "2.5.1",
     "rollup": "^2.66.1",
