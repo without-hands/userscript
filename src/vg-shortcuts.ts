@@ -1,5 +1,6 @@
 import { answer } from './the-answer.js';
 
-export default () => {
-  console.log(`The answer is ${answer}.`);
-};
+// noinspection JSVoidFunctionReturnValueUsed
+export default (() => {
+  console.log(`The real answer is ${answer}.`);
+})();

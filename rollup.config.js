@@ -3,22 +3,52 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import babel from '@rollup/plugin-babel';
+import metablock, { Options as MetablockOptions } from 'rollup-plugin-userscript-metablock';
+import pkg from './package.json';
 
 const defaultPlugins = [
   nodeResolve(),
   commonjs(),
   typescript(),
-  // babel({ babelHelpers: 'bundled' }),
+  babel({ babelHelpers: 'bundled' }),
 ];
+
+/**
+ * @type {import('rollup-plugin-userscript-metablock').Options}
+ */
+const commonMetablock = {
+  file: './meta.json',
+  override: {
+    version: pkg.version,
+    homepage: pkg.homepage,
+    author: pkg.author,
+    license: pkg.license,
+  },
+  manager: 'compatible',
+  validator: 'error',
+};
 
 export default defineConfig([
   {
     input: 'src/vg-shortcuts.ts',
     output: {
       name: 'vg-shortcuts',
-      file: 'build/vg-shortcuts.js',
+      file: 'build/vg-shortcuts.user.js',
       format: 'umd',
     },
-    plugins: [...defaultPlugins],
+    plugins: [
+      ...defaultPlugins,
+      metablock({
+        ...commonMetablock,
+        override: {
+          ...commonMetablock.override,
+          name: 'ViperGirls Shortcuts',
+          description: 'Useful keyboard shortcuts to navigate threads',
+
+          'run-at': 'document-idle',
+          include: 'https://vipergirls.to/threads/*',
+        },
+      }),
+    ],
   },
 ]);
