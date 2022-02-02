@@ -27,7 +27,6 @@
     "ext": "ts,json,yaml,yml,env",
     "watch": [
       "src",
-      "meta.json",
       "rollup.config.js"
     ],
     "env": {

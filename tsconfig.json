@@ -10,12 +10,12 @@
     /* Modules */
     "module": "ES6",
     "rootDir": "./src",
-    "moduleResolution": "node12",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
 
     /* Emit */
     "declaration": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "outDir": "./build",
     "removeComments": false,
 

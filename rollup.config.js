@@ -3,7 +3,7 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import babel from '@rollup/plugin-babel';
-import metablock, { Options as MetablockOptions } from 'rollup-plugin-userscript-metablock';
+import metablock from 'rollup-plugin-userscript-metablock';
 import pkg from './package.json';
 
 const defaultPlugins = [
@@ -17,7 +17,7 @@ const defaultPlugins = [
  * @type {import('rollup-plugin-userscript-metablock').Options}
  */
 const commonMetablock = {
-  file: './meta.json',
+  file: null,
   override: {
     version: pkg.version,
     homepage: pkg.homepage,

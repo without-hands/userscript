@@ -21,6 +21,7 @@
   "rules": {
     "eslint-comments/no-unused-disable": "error",
     "import/no-unresolved": "error",
+    "import/no-named-as-default": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {
