@@ -32,9 +32,18 @@ function goToPreviousPost() {
 }
 
 function goToNextPost() {
+  const documentElement = document.documentElement;
+  const scrollPercentage =
+    window.scrollY / (documentElement.scrollHeight - documentElement.clientHeight);
+  if (Math.abs(1 - scrollPercentage) < 0.001) {
+    console.log('End of page');
+    return;
+  }
+
   const currentPost = getPostInFocus();
   const currentIndex = posts.indexOf(currentPost);
   const nextPost = posts[currentIndex + 1];
+  // if (!nextPost || isInsideViewport(posts[posts.length - 1])) {
   if (!nextPost) {
     console.log('End of page');
     return;
@@ -43,11 +52,11 @@ function goToNextPost() {
 }
 
 function getPostInFocus(): Element {
-  const visiblePosts = posts.filter(isInViewport);
+  const visiblePosts = posts.filter(intersectsViewport);
   visiblePosts.sort((a, b) => {
     const rectA = a.getBoundingClientRect();
     const pctA =
-      rectA.height / (Math.max(window.innerHeight, rectA.bottom) - Math.max(0, rectA.top));
+      rectA.height / (Math.min(window.innerHeight, rectA.bottom) - Math.max(0, rectA.top));
     const rectB = b.getBoundingClientRect();
     const pctB =
       rectB.height / (Math.max(window.innerHeight, rectB.bottom) - Math.max(0, rectB.top));
@@ -59,9 +68,14 @@ function getPostInFocus(): Element {
   return visiblePosts[0];
 }
 
-function isInViewport(element: Element): boolean {
+function intersectsViewport(element: Element): boolean {
   const rect = element.getBoundingClientRect();
   return rect.bottom > 0 && rect.top < window.innerHeight;
+}
+
+function isInsideViewport(element: Element): boolean {
+  const rect = element.getBoundingClientRect();
+  return rect.top > 0 && rect.bottom < window.innerHeight;
 }
 
 document.addEventListener('keydown', onKeydown, true);
