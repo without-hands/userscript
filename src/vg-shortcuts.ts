@@ -1,3 +1,8 @@
+import { setupAxios } from './util';
+import axios from 'axios';
+
+setupAxios();
+
 const postsSelector = '#posts > li.postcontainer';
 const previousPageSelector = '.pagination a[rel=prev]';
 const nextPageSelector = '.pagination a[rel=next]';
@@ -105,3 +110,5 @@ if (GM_getValue(goToBottom, false)) {
   }
   GM_deleteValue(goToBottom);
 }
+
+axios.get('https://httpbin.org/headers').then((r) => console.log(r));
